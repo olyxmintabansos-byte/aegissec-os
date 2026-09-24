@@ -7,7 +7,10 @@ export type AttackCategory =
   | "BRUTE_FORCE"
   | "ZERO_DAY"
   | "CREDENTIAL_STUFFING"
-  | "API_ABUSE";
+  | "API_ABUSE"
+  | "SSRF_EXPLOIT"
+  | "PATH_TRAVERSAL"
+  | "COMMAND_INJECTION";
 
 export interface SecurityIncident {
   id: string;
@@ -28,13 +31,15 @@ export interface SecurityIncident {
 export interface FirewallRule {
   id: string;
   name: string;
-  action: "BLOCK" | "ALLOW" | "RATE_LIMIT";
+  action: "BLOCK" | "ALLOW" | "RATE_LIMIT" | "CHALLENGE";
   protocol: "TCP" | "UDP" | "HTTP" | "HTTPS";
   sourceCidr: string;
   targetPort: string;
+  patternRegex?: string;
   hitsCount: number;
   status: "ACTIVE" | "DISABLED";
   createdAt: string;
+  description?: string;
 }
 
 export interface MitreTacticItem {
@@ -55,4 +60,17 @@ export interface CveRecord {
   affectedPackage: string;
   patchStatus: "PATCH_AVAILABLE" | "MITIGATED" | "ZERO_DAY";
   description: string;
+  attackVector: "NETWORK" | "ADJACENT" | "LOCAL" | "PHYSICAL";
+  attackComplexity: "LOW" | "HIGH";
+  privilegesRequired: "NONE" | "LOW" | "HIGH";
+  userInteraction: "NONE" | "REQUIRED";
+  mitigationVirtualPatch: string;
+}
+
+export interface WafTestResult {
+  matchedRule?: FirewallRule;
+  action: "BLOCKED" | "ALLOWED";
+  matchedPattern?: string;
+  executionTimeMs: number;
+  payloadTested: string;
 }
